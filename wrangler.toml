@@ -1,0 +1,7 @@
+name = "choice-cart-crm"
+compatibility_date = "2025-09-24"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist/client"
+
+[build]
+command = "npm run build"
