@@ -1,0 +1,7 @@
+/*
+  Cloudflare Pages SPA fallback redirects.
+  All routes → index.html (200 rewrite so client-side router handles them).
+  API routes are excluded — they'll be handled by the Worker (_worker.js).
+*/
+/api/*  /api/:splat  200
+/*      /index.html  200
