@@ -1,6 +1,6 @@
 // Post-build script: copies the Cloudflare Worker entry + its assets to dist/client/
 // so Cloudflare Pages picks up _worker.js and all its dependencies resolve correctly.
-import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from "fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from "fs";
 import { join } from "path";
 
 function copyDir(src, dest) {
@@ -31,7 +31,14 @@ copyFileSync(src, dest);
 console.log(`✅ Copied ${src} → ${dest}`);
 
 // 2. Merge server assets INTO dist/client/assets/
-// _worker.js imports "./assets/worker-entry-*.js" etc. — must be at same level as _worker.js
 copyDir("dist/server/assets", "dist/client/assets");
 console.log("✅ Merged dist/server/assets → dist/client/assets");
+
+// 3. CRITICAL: Delete dist/client/wrangler.json so Cloudflare Pages deploy
+//    phase does NOT redirect away from wrangler.toml to this auto-generated file.
+const badWrangler = "dist/client/wrangler.json";
+if (existsSync(badWrangler)) {
+  rmSync(badWrangler);
+  console.log(`🗑️  Deleted ${badWrangler} (prevents deploy redirect)`);
+}
 
